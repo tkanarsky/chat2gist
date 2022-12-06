@@ -4,5 +4,23 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0"
-  }
+  },
+  "name": "chat2gist",
+  "version": "1.0.0",
+  "description": "chat2gist backend proxy",
+  "main": "backend.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkanarsky/chat2gist.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tkanarsky/chat2gist/issues"
+  },
+  "homepage": "https://github.com/tkanarsky/chat2gist#readme"
 }

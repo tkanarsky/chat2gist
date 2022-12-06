@@ -1,6 +1,21 @@
 // Submit new gist to GitHub
 
 (function() {
+    let getCodes = () => {
+        fetch("chat2gist.tkanarsky.com/get_code", {
+            method: 'GET',
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error("Couldn't fetch Github auth code. Try again in a bit.");
+        }).then(data => {
+            return data;
+        }).catch((error) => {
+            alert(error.message);
+        });
+    }
+    
     let getToken = () => {
         const token = localStorage.getItem('chat2gist_token');
         if (token) {
@@ -14,20 +29,8 @@
         // and poll
         //
 
-        fetch("chat2gist.tkanarsky.com", {
-            method: 'GET',
-        }).then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error("Couldn't fetch Github auth code. Try again in a bit.");
-        }).then(data => {
-            alert("Enter the following on auth page: " + data.user_code);
-            console.log('Success:', data);
-        }).catch((error) => {
-            alert(error.message);
-        });
-    }
+       
+    };
 
     // Determine if OAuth token is in local storage.
     var token = localStorage.getItem('chat2gist_token');
