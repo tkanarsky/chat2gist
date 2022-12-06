@@ -191,7 +191,7 @@ javascript: (function () {
             if (response.ok) {
                 return response.json();
             }
-            throw new Error("Couldn't fetch Github auth token. Try again in a bit.");
+            throw new Error("Couldn't fetch Github auth token. Check console for error.");
         }).then(data => {
             callback(data);
         }).catch((error) => {
@@ -217,8 +217,11 @@ javascript: (function () {
         }).then(response => {
             if (response.ok) {
                 return response.json();
+            } else if (response.status == 401) {
+                window.localStorage.removeItem("chat2gist_token");
+                throw new Error("Github auth token expired. Try running bookmarklet again.");
             } else {
-                throw new Error("Couldn't post gist. Try again in a bit.");
+                throw new Error("Couldn't post gist. Check console for error.");
             }
         }).then(
             json => callback(json.html_url)
