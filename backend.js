@@ -13,7 +13,7 @@ app.use(cors({
 
 // Set ratelimiting for get_code route to 1 request per 10 seconds
 const rateLimiter = rateLimit({
-    windowMs: 10 * 1000, // 30 seconds
+    windowMs: 10 * 1000, // 10 seconds
     max: 1,
     message: 'Too many requests, please try again in a bit'
 });

@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/tkanarsky/chat2gist/issues"
   },
-  "homepage": "https://github.com/tkanarsky/chat2gist#readme"
+  "homepage": "https://github.com/tkanarsky/chat2gist#readme",
+  "devDependencies": {
+    "eslint": "^8.29.0"
+  }
 }
