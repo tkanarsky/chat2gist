@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
 const rateLimit = require('express-rate-limit');
@@ -15,6 +16,8 @@ const getCodeLimiter = rateLimit({
     max: 1,
     message: 'Too many requests, please try again in a bit'
 });
+
+const jsonParser = bodyParser.json();
 
 app.get('/get_code', getCodeLimiter, (req, res) => {
     // Send POST request to https://github.com/login/device/code with required parameters
@@ -47,8 +50,9 @@ app.get('/get_code', getCodeLimiter, (req, res) => {
         });
 });
 
-app.post('/get_token', (req, res) => {
+app.post('/get_token', jsonParser, (req, res) => {
     // Get the device_code from the request body
+    console.log(req.body);
     const deviceCode = req.body.device_code;
     const interval = req.body.interval;
   
