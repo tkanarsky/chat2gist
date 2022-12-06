@@ -56,43 +56,50 @@ app.post('/get_token', jsonParser, rateLimiter, (req, res) => {
     console.log(req.body);
     const deviceCode = req.body.device_code;
     const interval = req.body.interval;
-  
+
+    // Set timeout for polling the Github API
+    const timeout = setTimeout(() => {
+        // Return error if timeout is reached
+        res.status(500).send({ error: 'Timeout reached' });
+    }, 90 * 1000); // 90 seconds
+
     // Poll the Github API until successful response is received
     const pollAccessToken = () => {
-      // Send POST request to https://github.com/login/oauth/access_token with required parameters and Accept: application/json header
-      axios.post('https://github.com/login/oauth/access_token', {
-        client_id: 'f3c4ae94e8621360c6d8',
-        device_code: deviceCode,
-        grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
-      }, {
-        headers: {
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => {
-        // Set 'Content-Type' header to accept application/json
-        res.set('Content-Type', 'application/json');
-  
-        // Check if access_token is present in response
-        if (response.data.access_token) {
-          // Return access_token to user
-          res.status(200).send({ access_token: response.data.access_token });
-        } else {
-          // Poll again after the interval specified in the response
-          setTimeout(pollAccessToken, interval * 1000);
-        }
-      })
-      .catch(error => {
-        // Set 'Content-Type' header to accept application/json
-        res.set('Content-Type', 'application/json');
-  
-        // Return error from Github API to user
-        res.status(error.response.status).send(error.response.data);
-      });
+        // Send POST request to https://github.com/login/oauth/access_token with required parameters and Accept: application/json header
+        axios.post('https://github.com/login/oauth/access_token', {
+            client_id: 'f3c4ae94e8621360c6d8',
+            device_code: deviceCode,
+            grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
+        }, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => {
+                // Set 'Content-Type' header to accept application/json
+                res.set('Content-Type', 'application/json');
+
+                // Check if access_token is present in response
+                if (response.data.access_token) {
+                    clearTimeout(timeout);
+                    // Return access_token to user
+                    res.status(200).send({ access_token: response.data.access_token });
+                } else {
+                    // Poll again after the interval specified in the response
+                    setTimeout(pollAccessToken, interval * 1000);
+                }
+            })
+            .catch(error => {
+                // Set 'Content-Type' header to accept application/json
+                res.set('Content-Type', 'application/json');
+
+                // Return error from Github API to user
+                res.status(error.response.status).send(error.response.data);
+            });
     };
-  
+
     // Start polling the Github API
     pollAccessToken();
-  });
+});
 
 app.listen(3000, () => console.log('Server listening on port 3000'));
