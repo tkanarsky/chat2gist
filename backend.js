@@ -4,6 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 const rateLimit = require('express-rate-limit');
 const app = express();
+app.set('trust proxy', 1);
 
 // Use cors module to set CORS to allow requests from https://chat.openai.com only
 app.use(cors({
@@ -11,7 +12,7 @@ app.use(cors({
 }));
 
 // Set ratelimiting for get_code route to 1 request per 10 seconds
-const getCodeLimiter = rateLimit({
+const rateLimiter = rateLimit({
     windowMs: 10 * 1000, // 30 seconds
     max: 1,
     message: 'Too many requests, please try again in a bit'
@@ -19,7 +20,7 @@ const getCodeLimiter = rateLimit({
 
 const jsonParser = bodyParser.json();
 
-app.get('/get_code', getCodeLimiter, (req, res) => {
+app.get('/get_code', rateLimiter, (req, res) => {
     // Send POST request to https://github.com/login/device/code with required parameters
     axios.post('https://github.com/login/device/code', {
         client_id: 'f3c4ae94e8621360c6d8',
@@ -50,7 +51,7 @@ app.get('/get_code', getCodeLimiter, (req, res) => {
         });
 });
 
-app.post('/get_token', jsonParser, (req, res) => {
+app.post('/get_token', jsonParser, rateLimiter, (req, res) => {
     // Get the device_code from the request body
     console.log(req.body);
     const deviceCode = req.body.device_code;
