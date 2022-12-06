@@ -5,6 +5,9 @@ const axios = require('axios');
 const app = express();
 app.set('trust proxy', 1);
 
+// Get client id from environment variable
+const CLIENT_ID = process.env.CLIENT_ID;
+
 // Use cors module to set CORS to allow requests from https://chat.openai.com only
 app.use(cors({
     origin: 'https://chat.openai.com'
@@ -15,7 +18,7 @@ const jsonParser = bodyParser.json();
 app.get('/get_code', (req, res) => {
     // Send POST request to https://github.com/login/device/code with required parameters
     axios.post('https://github.com/login/device/code', {
-        client_id: 'f3c4ae94e8621360c6d8',
+        client_id: CLIENT_ID,
         scope: 'gist'
     }, {
         headers: {
@@ -59,7 +62,7 @@ app.post('/get_token', jsonParser, (req, res) => {
     const pollAccessToken = () => {
         // Send POST request to https://github.com/login/oauth/access_token with required parameters and Accept: application/json header
         axios.post('https://github.com/login/oauth/access_token', {
-            client_id: 'f3c4ae94e8621360c6d8',
+            client_id: CLIENT_ID,
             device_code: deviceCode,
             grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
         }, {
